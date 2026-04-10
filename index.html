@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>🎁 幸运抽奖 - 国元证券投教活动</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 400px;
+            width: 100%;
+            text-align: center;
+        }
+
+        .logo-area {
+            margin-bottom: 20px;
+        }
+
+        .logo-text {
+            font-size: 28px;
+            font-weight: bold;
+            color: #fff;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .logo-subtitle {
+            font-size: 14px;
+            color: rgba(255,255,255,0.9);
+            margin-top: 5px;
+        }
+
+        .lottery-box {
+            background: #fff;
+            border-radius: 20px;
+            padding: 30px 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            margin-bottom: 30px;
+        }
+
+        .title {
+            font-size: 24px;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 30px;
+        }
+
+        .slot-machine {
+            position: relative;
+            height: 220px;
+            overflow: hidden;
+            background: linear-gradient(180deg, #f8f9fa 0%, #fff 50%, #f8f9fa 100%);
+            border-radius: 15px;
+            margin-bottom: 30px;
+            border: 3px solid #e0e0e0;
+        }
+
+        .highlight-frame {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 160px;
+            height: 180px;
+            border: 4px solid #ff6b6b;
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(255, 107, 107, 0.5);
+            z-index: 10;
+            pointer-events: none;
+            display: none;
+        }
+
+        .highlight-frame.show {
+            display: block;
+            animation: pulse 0.5s ease-in-out infinite alternate;
+        }
+
+        @keyframes pulse {
+            from { box-shadow: 0 0 20px rgba(255, 107, 107, 0.5); }
+            to { box-shadow: 0 0 30px rgba(255, 107, 107, 0.8); }
+        }
+
+        .items-container {
+            position: absolute;
+            width: 100%;
+            left: 0;
+            transition: transform 0.1s linear;
+        }
+
+        .item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 15px;
+            height: 180px;
+        }
+
+        .item-icon {
+            font-size: 80px;
+            margin-bottom: 10px;
+            filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.1));
+        }
+
+        .item-name {
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .btn-container {
+            margin-top: 20px;
+        }
+
+        .lottery-btn {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a5a 100%);
+            color: #fff;
+            border: none;
+            padding: 18px 60px;
+            font-size: 22px;
+            font-weight: bold;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 10px 30px rgba(238, 90, 90, 0.4);
+            transition: all 0.3s ease;
+        }
+
+        .lottery-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 40px rgba(238, 90, 90, 0.5);
+        }
+
+        .lottery-btn:active {
+            transform: translateY(0);
+        }
+
+        .lottery-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        .result-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+        }
+
+        .result-overlay.show {
+            display: flex;
+        }
+
+        .result-box {
+            background: #fff;
+            border-radius: 20px;
+            padding: 40px 30px;
+            text-align: center;
+            max-width: 320px;
+            width: 90%;
+            animation: popIn 0.4s ease-out;
+        }
+
+        @keyframes popIn {
+            0% { transform: scale(0.5); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .result-icon {
+            font-size: 80px;
+            margin-bottom: 15px;
+        }
+
+        .result-title {
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .result-name {
+            font-size: 28px;
+            font-weight: bold;
+            color: #ff6b6b;
+            margin-bottom: 20px;
+        }
+
+        .result-tip {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 25px;
+            line-height: 1.6;
+        }
+
+        .close-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #fff;
+            border: none;
+            padding: 12px 40px;
+            font-size: 16px;
+            border-radius: 25px;
+            cursor: pointer;
+        }
+
+        .footer {
+            color: rgba(255,255,255,0.8);
+            font-size: 12px;
+            margin-top: 20px;
+        }
+
+        /* 烟花效果 */
+        .fireworks {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 99;
+            display: none;
+        }
+
+        .fireworks.show {
+            display: block;
+        }
+
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: #f00;
+            animation: fall 3s linear forwards;
+        }
+
+        @keyframes fall {
+            0% {
+                opacity: 1;
+                transform: translateY(-100px) rotate(0deg);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(100vh) rotate(720deg);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo-area">
+            <div class="logo-text">🏛️ 国元证券</div>
+            <div class="logo-subtitle">投资者教育活动</div>
+        </div>
+
+        <div class="lottery-box">
+            <div class="title">🎁 幸运大抽奖</div>
+            <div class="subtitle">按下按钮，试试手气！</div>
+
+            <div class="slot-machine">
+                <div class="highlight-frame" id="highlightFrame"></div>
+                <div class="items-container" id="itemsContainer">
+                    <!-- 动态生成 -->
+                </div>
+            </div>
+
+            <div class="btn-container">
+                <button class="lottery-btn" id="lotteryBtn" onclick="toggleLottery()">
+                    开始抽奖
+                </button>
+            </div>
+        </div>
+
+        <div class="footer">
+            每人限抽奖一次 | 最终解释权归国元证券所有
+        </div>
+    </div>
+
+    <!-- 结果弹窗 -->
+    <div class="result-overlay" id="resultOverlay">
+        <div class="result-box">
+            <div class="result-icon" id="resultIcon">🎉</div>
+            <div class="result-title">恭喜您获得</div>
+            <div class="result-name" id="resultName">颈枕</div>
+            <div class="result-tip">
+                请截图保存此页面<br>
+                凭截图到工作人员处领取礼品
+            </div>
+            <button class="close-btn" onclick="closeResult()">确定</button>
+        </div>
+    </div>
+
+    <!-- 烟花效果 -->
+    <div class="fireworks" id="fireworks"></div>
+
+    <script>
+        // 礼品数据
+        const gifts = [
+            { name: '颈枕', icon: '🛏️' },
+            { name: '遮阳伞', icon: '☂️' },
+            { name: '便携三脚架', icon: '📷' },
+            { name: '便携补光灯', icon: '💡' }
+        ];
+
+        // 状态
+        let isRunning = false;
+        let currentIndex = 0;
+        let animationId = null;
+        let speed = 50;
+        let roundCount = 0;
+        const minRounds = 2; // 至少转2圈
+        const itemHeight = 180;
+        const totalItems = gifts.length * 5; // 复制5份实现无限滚动
+
+        // 初始化
+        function init() {
+            const container = document.getElementById('itemsContainer');
+            let html = '';
+            
+            // 生成多份礼品实现无缝滚动
+            for (let i = 0; i < 5; i++) {
+                gifts.forEach(gift => {
+                    html += `
+                        <div class="item">
+                            <div class="item-icon">${gift.icon}</div>
+                            <div class="item-name">${gift.name}</div>
+                        </div>
+                    `;
+                });
+            }
+            
+            container.innerHTML = html;
+        }
+
+        // 切换抽奖状态
+        function toggleLottery() {
+            if (isRunning) {
+                stopLottery();
+            } else {
+                startLottery();
+            }
+        }
+
+        // 开始抽奖
+        function startLottery() {
+            isRunning = true;
+            roundCount = 0;
+            speed = 50;
+            
+            const btn = document.getElementById('lotteryBtn');
+            btn.textContent = '停止';
+            btn.style.background = 'linear-gradient(135deg, #4CAF50 0%, #45a049 100%)';
+            
+            document.getElementById('highlightFrame').classList.remove('show');
+            
+            animate();
+        }
+
+        // 动画
+        function animate() {
+            if (!isRunning) return;
+            
+            const container = document.getElementById('itemsContainer');
+            currentIndex++;
+            roundCount = Math.floor(currentIndex / gifts.length);
+            
+            // 重置位置实现无限滚动
+            if (currentIndex >= totalItems - gifts.length) {
+                currentIndex = 0;
+                container.style.transition = 'none';
+                container.style.transform = `translateY(0px)`;
+                setTimeout(() => {
+                    container.style.transition = 'transform 0.1s linear';
+                }, 10);
+            } else {
+                container.style.transform = `translateY(-${currentIndex * itemHeight}px)`;
+            }
+            
+            animationId = requestAnimationFrame(() => {
+                setTimeout(animate, speed);
+            });
+        }
+
+        // 停止抽奖
+        function stopLottery() {
+            isRunning = false;
+            cancelAnimationFrame(animationId);
+            
+            const btn = document.getElementById('lotteryBtn');
+            btn.textContent = '抽奖中...';
+            btn.disabled = true;
+            
+            // 随机选择一个礼品
+            const selectedIndex = Math.floor(Math.random() * gifts.length);
+            const selectedGift = gifts[selectedIndex];
+            
+            // 计算停止位置（至少转2圈）
+            const stopIndex = minRounds * gifts.length + selectedIndex;
+            
+            // 缓慢停止动画
+            slowDown(stopIndex, selectedGift);
+        }
+
+        // 缓慢停止
+        function slowDown(targetIndex, selectedGift) {
+            const container = document.getElementById('itemsContainer');
+            const startPos = currentIndex;
+            const distance = targetIndex - startPos;
+            const steps = 30;
+            let step = 0;
+            
+            function easeOut() {
+                step++;
+                const progress = step / steps;
+                const easeProgress = 1 - Math.pow(1 - progress, 3);
+                const currentPos = startPos + distance * easeProgress;
+                
+                container.style.transform = `translateY(-${currentPos * itemHeight}px)`;
+                
+                if (step < steps) {
+                    requestAnimationFrame(easeOut);
+                } else {
+                    // 完全停止
+                    setTimeout(() => showResult(selectedGift), 300);
+                }
+            }
+            
+            easeOut();
+        }
+
+        // 显示结果
+        function showResult(gift) {
+            document.getElementById('highlightFrame').classList.add('show');
+            
+            // 显示结果弹窗
+            setTimeout(() => {
+                document.getElementById('resultIcon').textContent = gift.icon;
+                document.getElementById('resultName').textContent = gift.name;
+                document.getElementById('resultOverlay').classList.add('show');
+                
+                // 烟花效果
+                createFireworks();
+            }, 500);
+        }
+
+        // 烟花效果
+        function createFireworks() {
+            const container = document.getElementById('fireworks');
+            container.classList.add('show');
+            container.innerHTML = '';
+            
+            const colors = ['#ff6b6b', '#ffd93d', '#6bcb77', '#4d96ff', '#ff85a1', '#a66cff'];
+            
+            for (let i = 0; i < 50; i++) {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti';
+                confetti.style.left = Math.random() * 100 + '%';
+                confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+                confetti.style.animationDelay = Math.random() * 0.5 + 's';
+                confetti.style.borderRadius = Math.random() > 0.5 ? '50%' : '0';
+                container.appendChild(confetti);
+            }
+            
+            setTimeout(() => {
+                container.classList.remove('show');
+            }, 3000);
+        }
+
+        // 关闭结果
+        function closeResult() {
+            document.getElementById('resultOverlay').classList.remove('show');
+        }
+
+        // 初始化
+        init();
+    </script>
+</body>
+</html>
