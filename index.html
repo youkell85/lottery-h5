@@ -490,9 +490,27 @@
             }, 3000);
         }
 
-        // 关闭结果
+        // 关闭结果并重置抽奖
         function closeResult() {
             document.getElementById('resultOverlay').classList.remove('show');
+            document.getElementById('highlightFrame').classList.remove('show');
+            
+            // 重置按钮状态
+            const btn = document.getElementById('lotteryBtn');
+            btn.textContent = '重新开始抽奖';
+            btn.disabled = false;
+            btn.style.background = 'linear-gradient(135deg, #ff6b6b 0%, #ee5a5a 100%)';
+            
+            // 重置转盘位置
+            const container = document.getElementById('itemsContainer');
+            container.style.transition = 'none';
+            container.style.transform = 'translateY(0px)';
+            setTimeout(() => {
+                container.style.transition = 'transform 0.1s linear';
+            }, 10);
+            
+            currentIndex = 0;
+            isRunning = false;
         }
 
         // 初始化
