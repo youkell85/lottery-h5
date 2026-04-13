@@ -3,6 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <style>
+        /* 横屏优化 - iPad 11寸及类似设备 */
+        @media (orientation: landscape) and (min-width: 700px) {
+            .container {
+                max-width: 900px !important;
+                padding: 40px !important;
+            }
+            
+            .cover-wrapper {
+                max-width: 700px !important;
+                border-radius: 25px !important;
+            }
+            
+            .start-btn {
+                font-size: 24px !important;
+                padding: 22px 60px !important;
+                border-radius: 60px !important;
+            }
+            
+            .btn-overlay {
+                padding-bottom: 20% !important;
+            }
+        }
+    </style>
     <title>投资者知识问答 - 国元证券</title>
     <style>
         * {

@@ -3,6 +3,125 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <style>
+        /* 横屏优化 - iPad 11寸及类似设备 */
+        @media (orientation: landscape) and (min-width: 700px) {
+            /* 针对iPad Pro 11寸等横屏设备 */
+            .container {
+                max-width: 900px !important;
+                padding: 40px !important;
+            }
+            
+            .logo-text {
+                font-size: 48px !important;
+            }
+            
+            .logo-subtitle {
+                font-size: 20px !important;
+            }
+            
+            .title {
+                font-size: 36px !important;
+                margin-bottom: 15px !important;
+            }
+            
+            .subtitle {
+                font-size: 20px !important;
+                margin-bottom: 40px !important;
+            }
+            
+            .lottery-box {
+                padding: 40px 30px !important;
+                border-radius: 30px !important;
+            }
+            
+            .slot-machine {
+                height: 280px !important;
+                border-radius: 20px !important;
+                border-width: 4px !important;
+            }
+            
+            .highlight-frame {
+                width: 200px !important;
+                height: 240px !important;
+            }
+            
+            .item {
+                height: 240px !important;
+            }
+            
+            .item-icon {
+                font-size: 120px !important;
+                margin-bottom: 15px !important;
+            }
+            
+            .item-name {
+                font-size: 28px !important;
+            }
+            
+            .lottery-btn {
+                font-size: 28px !important;
+                padding: 22px 80px !important;
+                border-radius: 60px !important;
+            }
+            
+            .footer {
+                font-size: 16px !important;
+                margin-top: 30px !important;
+            }
+            
+            .result-box {
+                max-width: 500px !important;
+                padding: 50px 40px !important;
+            }
+            
+            .result-icon {
+                font-size: 100px !important;
+                margin-bottom: 20px !important;
+            }
+            
+            .result-title {
+                font-size: 32px !important;
+                margin-bottom: 15px !important;
+            }
+            
+            .result-name {
+                font-size: 42px !important;
+                margin-bottom: 30px !important;
+            }
+            
+            .result-tip {
+                font-size: 20px !important;
+                line-height: 1.8 !important;
+                margin-bottom: 35px !important;
+            }
+            
+            .close-btn {
+                font-size: 20px !important;
+                padding: 16px 50px !important;
+                border-radius: 30px !important;
+            }
+            
+            /* 横屏额外优化 */
+            .slot-machine {
+                max-width: 700px !important;
+                margin: 0 auto 40px !important;
+            }
+            
+            .lottery-box {
+                max-width: 800px !important;
+                margin: 0 auto !important;
+            }
+            
+            .btn-container {
+                margin-top: 30px !important;
+            }
+            
+            .lottery-btn {
+                min-width: 300px !important;
+            }
+        }
+    </style>
     <title>🎁 幸运抽奖 - 国元证券投教活动</title>
     <style>
         * {
@@ -333,8 +452,13 @@
         let speed = 50;
         let roundCount = 0;
         const minRounds = 2; // 至少转2圈
-        const itemHeight = 180;
         const totalItems = gifts.length * 5; // 复制5份实现无限滚动
+        
+        // 获取item高度函数
+        function getItemHeight() {
+            const item = document.querySelector('.item');
+            return item ? item.offsetHeight : 180; // 默认值
+        }
 
         // 初始化
         function init() {
@@ -397,7 +521,7 @@
                     container.style.transition = 'transform 0.1s linear';
                 }, 10);
             } else {
-                container.style.transform = `translateY(-${currentIndex * itemHeight}px)`;
+                container.style.transform = `translateY(-${currentIndex * getItemHeight()}px)`;
             }
             
             animationId = requestAnimationFrame(() => {
@@ -439,7 +563,7 @@
                 const easeProgress = 1 - Math.pow(1 - progress, 3);
                 const currentPos = startPos + distance * easeProgress;
                 
-                container.style.transform = `translateY(-${currentPos * itemHeight}px)`;
+                container.style.transform = `translateY(-${currentPos * getItemHeight()}px)`;
                 
                 if (step < steps) {
                     requestAnimationFrame(easeOut);
